@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>时钟Timer</title>
+    <link rel="stylesheet" href="ClockStyle.css"> <!-- 引用外部 CSS 文件 -->
+
+</head>
+
+
+<script>
+    let intervalId;
+    let isRunning = false;
+   
+    // 启动时钟
+    myfun(1);
+
+    function updateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString();
+        document.getElementById("Text1").value = timeString;
+        document.getElementById("Text2").textContent = timeString;
+
+        // 更新时钟指针
+        const seconds = now.getSeconds();
+        const minutes = now.getMinutes();
+        const hours = now.getHours();
+
+        const secondDegrees = ((seconds / 60) * 360) ; 
+        const minuteDegrees = ((minutes / 60) * 360) + ((seconds / 60) * 6) ; // 每秒增加
+        const hourDegrees = ((hours / 12) * 360) + ((minutes / 60) * 30) ; // 每分钟增加
+
+        document.getElementById('secondHand').style.transform = `translateX(-50%) rotate(${secondDegrees}deg)`;
+        document.getElementById('minuteHand').style.transform = `translateX(-50%) rotate(${minuteDegrees}deg)`;
+        document.getElementById('hourHand').style.transform = `translateX(-50%) rotate(${hourDegrees}deg)`;
+
+    }
+
+    // 每秒更新时间
+    function startClock() {
+
+        isRunning = true;
+        updateTime(); // 初始化时钟和文本框
+        intervalId = setInterval(updateTime, 1000);
+    }
+
+    function stopClock() {
+        clearInterval(intervalId);
+        isRunning = false;
+    }
+
+    function myfun(id) {
+        if (id == 1) {
+            startClock();
+        } else {
+            stopClock();
+        }
+    }
+
+
+</script>
+
+<body>
+    <div class="outer-container">
+        <div class="container">
+            <div id="clock">
+                <div class="hand hour" id="hourHand"></div>
+                <div class="hand minute" id="minuteHand"></div>
+                <div class="hand second" id="secondHand"></div>
+            </div>
+
+            <div id="outD">
+                <input id="Text1" type="text" readonly />
+                <br />
+                <input id="Btn" type="button" value="Start" onclick="myfun(1)" />
+                <input id="Btn" type="button" value="Stop" onclick="myfun(2)" />
+                <br />
+                <span> 现在是北京时间：</span><div id="Text2" style="display:inline;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加刻度和数字 -->
+    <script>
+        const clock = document.getElementById('clock');
+        for (let i = 0; i < 12; i++) {
+            // 创建时钟中心
+            const tick = document.createElement('div');
+            tick.className = 'tick';
+            tick.style.height = '10px';
+            tick.style.transform = `rotate(${i * 30}deg)`;
+            tick.style.top = '90px';
+            tick.style.left = '50%';
+            tick.style.transformOrigin = 'bottom';
+            tick.style.position = 'absolute'; // 添加绝对定位
+            clock.appendChild(tick);
+
+
+            // 创建数字
+            const number = document.createElement('div');
+            number.className = 'number';
+            number.innerText = i === 0 ? 12 : i; // 12点显示为12
+            number.style.transform = `rotate(${i * 30}deg) translateY(-82px)`;
+            number.style.left = '48%';
+            number.style.bottom = '47%';
+            clock.appendChild(number);
+        }
+    </script>
+
+</body>
+</html>
+
+
